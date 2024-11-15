@@ -60,7 +60,11 @@ export function LoginForm() {
                     Email
                   </FormLabel>
                   <FormControl className="flex items-center">
-                    <Input className="rounded-s-none h-10" {...field} />
+                    <Input
+                      type="email"
+                      className="rounded-s-none h-10"
+                      {...field}
+                    />
                   </FormControl>
                 </div>
 
@@ -89,7 +93,11 @@ export function LoginForm() {
               </FormItem>
             )}
           />
-          <Button disabled={loginMutation.isPending} className="w-full">
+          <Button
+            type="submit"
+            disabled={loginMutation.isPending}
+            className="w-full"
+          >
             {loginMutation.isPending ? (
               <Loader2 className="animate-spin duration-200" />
             ) : (

@@ -1,9 +1,12 @@
 import { TodoBoard } from "./_widgets/todo-board";
 
 import { SignoutButton } from "./_widgets/signout-button";
+import { auth } from "@/auth";
 
 export default async function Home() {
   const date = new Date();
+  // Better to pass the userid from the server
+  const session = await auth();
 
   return (
     <main className="min-h-screen flex justify-center py-24 px-4">
@@ -15,7 +18,7 @@ export default async function Home() {
           </div>
           <SignoutButton />
         </div>
-        <TodoBoard />
+        {session?.user.id && <TodoBoard userId={session?.user.id} />}
       </div>
     </main>
   );

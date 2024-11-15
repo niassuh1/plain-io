@@ -6,17 +6,14 @@ import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AddTodo } from "./add-todo";
 import { useTodo } from "../_store/useTodo";
-import { useSession } from "next-auth/react";
 import { useTodoQuery } from "../_hooks/useTodoQuery";
 import { TodoCard } from "./todo-card";
 import { supabaseJs } from "@/lib/client";
 import { Todo } from "@prisma/client";
 
-export function TodoBoard() {
+export function TodoBoard({ userId }: { userId: string }) {
   const [isOpen, setIsOpen] = useState(true);
 
-  const { data } = useSession();
-  const userId = data?.user.id;
   const todoQuery = useTodoQuery({ userId: userId! });
   const { todos, setTodos, push, remove } = useTodo();
 
