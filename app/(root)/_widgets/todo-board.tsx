@@ -10,8 +10,10 @@ import { useTodoQuery } from "../_hooks/useTodoQuery";
 import { TodoCard } from "./todo-card";
 import { supabaseJs } from "@/lib/client";
 import { Todo } from "@prisma/client";
+import { useTranslations } from "next-intl";
 
 export function TodoBoard({ userId }: { userId: string }) {
+  const t = useTranslations("HomePage");
   const [isOpen, setIsOpen] = useState(true);
 
   const todoQuery = useTodoQuery({ userId: userId! });
@@ -63,7 +65,7 @@ export function TodoBoard({ userId }: { userId: string }) {
               "transition-all ease-in-out w-4 h-4"
             )}
           />
-          <div>📅 Today</div>
+          <div>📅 {t("today")}</div>
         </CollapsibleTrigger>
 
         <AnimatePresence>

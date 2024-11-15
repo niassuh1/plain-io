@@ -1,13 +1,13 @@
 
 # Install yarn
-FROM node:18-alpine as base
+FROM node:20-alpine as base
 
 
 
 FROM base AS packages
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json ./
+RUN yarn install  --frozen-lockfile
 
 
 FROM base AS builder

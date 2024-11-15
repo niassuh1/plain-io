@@ -19,12 +19,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAddTodoMutation } from "../_hooks/useAddTodoMutation";
+import { useTranslations } from "next-intl";
 
 const addTodoFormSchema = z.object({
   title: z.string(),
 });
 
 export function AddTodo() {
+  const t = useTranslations("HomePage");
   const [isAdding, setIsAdding] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const session = useSession();
@@ -70,7 +72,7 @@ export function AddTodo() {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Add Todo Here"
+                      placeholder={t("addTodoPlaceholder")}
                       ref={inputRef}
                       className="border-none focus:border-none focus:ring-0 focus-visible:ring-0 shadow-none"
                     />
@@ -100,7 +102,7 @@ export function AddTodo() {
         className="flex items-center justify-start gap-4 w-full border-2 border-dashed"
       >
         <Plus />
-        <div className="flex-1 text-start">Add Todo</div>
+        <div className="flex-1 text-start">{t("addTodo")}</div>
       </Button>
     </div>
   );

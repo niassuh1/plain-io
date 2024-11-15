@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { useLoginMutation } from "../_hooks/useLoginMutation";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email format" }),
@@ -36,6 +37,8 @@ export function LoginForm() {
     loginMutation.mutate(value);
   }
 
+  const t = useTranslations("LoginPage");
+
   return (
     <div className="max-w-lg w-full">
       <Form {...loginForm}>
@@ -47,8 +50,8 @@ export function LoginForm() {
             <Logo />
           </div>
           <div className="space-y-2">
-            <h1 className="text-3xl font-semibold">Login</h1>
-            <p className="text-muted-foreground">Log in and start using app</p>
+            <h1 className="text-3xl font-semibold">{t("title")}</h1>
+            <p className="text-muted-foreground">{t("description")}</p>
           </div>
           <FormField
             control={loginForm.control}
@@ -57,7 +60,7 @@ export function LoginForm() {
               <FormItem>
                 <div className="flex">
                   <FormLabel className="flex items-center border border-e-0 rounded-s px-4 shadow-sm w-32">
-                    Email
+                    {t("emailLabel")}
                   </FormLabel>
                   <FormControl className="flex items-center">
                     <Input
@@ -79,7 +82,7 @@ export function LoginForm() {
               <FormItem>
                 <div className="flex">
                   <FormLabel className="flex items-center border border-e-0 rounded-s px-4 shadow-sm w-32">
-                    Password
+                    {t("passwordLabel")}
                   </FormLabel>
                   <FormControl className="flex items-center">
                     <Input
@@ -101,11 +104,11 @@ export function LoginForm() {
             {loginMutation.isPending ? (
               <Loader2 className="animate-spin duration-200" />
             ) : (
-              "Login"
+              t("loginButton")
             )}
           </Button>
           <Button className="px-0" variant="link" type="button">
-            Forgot your password?
+            {t("forgotPasswordButton")}
           </Button>
         </form>
       </Form>

@@ -1,0 +1,19 @@
+{
+  "LoginPage": {
+    "title": "Login",
+    "description": "Log in and start using app",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Login",
+    "forgotPasswordButton": "Forgot your password?",
+    "switchLanguageButton": "Switch to Arabic"
+  },
+  "HomePage": {
+    "title": "Greeting! 😎",
+    "description": "Its",
+    "signOutButton": "Sign out",
+    "addTodo": "Add Todo",
+    "today": "Today",
+    "addTodoPlaceholder": "Add Todo Here"
+  }
+}
