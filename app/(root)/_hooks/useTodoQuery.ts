@@ -3,7 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 
 async function fetchTodo({ userId }: { userId: string }) {
   const supabase = createClient();
-  const res = await supabase.from("todo").select("*").eq("created_by", userId);
+  const res = await supabase
+    .from("todo")
+    .select("*")
+    .eq("created_by", userId)
+    .is("deleted_at", null)
+    .order("done");
   return res.data;
 }
 

@@ -19,7 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAddTodoMutation } from "../_hooks/useAddTodoMutation";
-import { queryClient } from "@/lib/query-provider";
 
 const addTodoFormSchema = z.object({
   title: z.string(),
@@ -37,17 +36,13 @@ export function AddTodo() {
     },
   });
 
-  const addTodoMutation = useAddTodoMutation({
-    onSuccess: () => {
-      // queryClient.refetchQueries({ queryKey: ["todo", data?.user.id] });
-    },
-  });
+  const addTodoMutation = useAddTodoMutation();
 
   function handleSubmit(data: z.infer<typeof addTodoFormSchema>) {
     console.log(data);
     addTodoMutation.mutate({
       title: data.title,
-      userId: session.data?.user.id!,
+      userId: session.data?.user.id as string,
     });
   }
 

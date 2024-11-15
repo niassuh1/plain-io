@@ -9,8 +9,8 @@ import { useTodo } from "../_store/useTodo";
 import { useSession } from "next-auth/react";
 import { useTodoQuery } from "../_hooks/useTodoQuery";
 import { TodoCard } from "./todo-card";
-import { createClient } from "@/util/supabase/client";
 import { supabaseJs } from "@/lib/client";
+import { Todo } from "@prisma/client";
 
 export function TodoBoard() {
   const [isOpen, setIsOpen] = useState(true);
@@ -18,26 +18,43 @@ export function TodoBoard() {
   const { data } = useSession();
   const userId = data?.user.id;
   const todoQuery = useTodoQuery({ userId: userId! });
-  const { todos, setTodos, push } = useTodo();
-
-  const supabase = createClient();
+  const { todos, setTodos, push, remove } = useTodo();
 
   useEffect(() => {
     if (todoQuery.data) {
-      setTodos(todoQuery.data);
+      setTodos(todoQuery.data as Todo[]);
     }
   }, [todoQuery.data]);
+
   useEffect(() => {
+    //Subscribe to data insert
     supabaseJs
       .channel("todo insert")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "todo" },
         (payload) => {
-          push(payload.new as any);
+          push(payload.new as Todo);
         }
       )
       .subscribe();
+
+    //Subscribe to data delete
+    supabaseJs
+      .channel("todo delete")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "todo" },
+        (payload) => {
+          const newData = payload.new as Todo;
+          if (newData.deleted_at) {
+            console.log("Removing", newData);
+            remove(newData);
+          }
+        }
+      )
+      .subscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div>
@@ -66,13 +83,7 @@ export function TodoBoard() {
               className="flex flex-col gap-4"
             >
               {todos?.map((v) => (
-                <TodoCard
-                  key={v.id}
-                  todo={{
-                    id: v.id,
-                    title: v.title,
-                  }}
-                />
+                <TodoCard key={v.id} todo={v} />
               ))}
               <AddTodo />
             </motion.div>

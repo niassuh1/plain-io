@@ -1,17 +1,4 @@
 services:
-  # Initialize postgres database first
-  database:
-    image: postgres:14-alpine
-    restart: always
-    ports:
-      - 5431:5432
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - type: tmpfs
-        target: /dev/shm
-        tmpfs:
-          size: 134217728
   # Build the app
   app:
     build: .

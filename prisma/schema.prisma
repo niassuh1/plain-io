@@ -23,11 +23,13 @@ model User {
 }
 
 model Todo {
-  id         Int    @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   title      String
-  created_by String @db.Uuid
-  priority   Int?   @default(0)
-  user       User   @relation(fields: [created_by], references: [id])
+  created_by String    @db.Uuid
+  deleted_at DateTime? @db.Timestamptz()
+  done       Boolean?  @default(false)
+  priority   Int?      @default(0)
+  user       User      @relation(fields: [created_by], references: [id])
 
   @@map("todo")
 }
