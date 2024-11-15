@@ -14,6 +14,7 @@ FROM base AS builder
 WORKDIR /app
 COPY . .
 COPY --from=packages /app/node_modules ./node_modules
+RUN npx prisma migrate dev --name build_migration
 RUN yarn build
 
 FROM base AS runner
