@@ -1,53 +1,57 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "./prisma";
 import { hashPassword } from "./util/hash-password";
+import { prisma } from "./prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: {},
-        password: {},
+        email: { type: "email" },
+        password: { type: "password" },
       },
       async authorize(credentials) {
-        const email = credentials.email as string;
-        const password = credentials.password as string;
-        const user = await prisma.user.findFirst({
-          where: { email: email },
-        });
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
 
-        // Check if user exists
+        const user = await prisma.user.findFirst({ where: { email: email } });
+        const hashedPassword = hashPassword(password);
+        // Check if user exits
         if (user) {
-          // Check if user's password matches
-          const passwordMatches = hashPassword(password) === user.password;
-          if (passwordMatches) return { id: user.id, email: user.email };
+          if (user.password === hashedPassword) {
+            return { email: user.email, id: user.id };
+          }
         } else {
-          //If user doesn't exist, create a new one
-          const hashedPassword = hashPassword(password);
+          //Create a new user
           const newUser = await prisma.user.create({
             data: {
-              email: email,
+              email,
               password: hashedPassword,
             },
           });
-
-          return {
-            id: newUser.id,
-            email: newUser.email,
-          };
+          return { email: newUser.email, id: newUser.id };
         }
 
         return null;
       },
     }),
   ],
-  pages: {
-    signIn: "/login",
-  },
+
   callbacks: {
-    session(params) {
-      return params;
-    },
+    session: ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.sub,
+      },
+    }),
+    // jwt({ token, user, account }) {
+    //   if (account) {
+    //     token.id = user.id;
+    //   }
+    //   return token;
+    // },
   },
 });
